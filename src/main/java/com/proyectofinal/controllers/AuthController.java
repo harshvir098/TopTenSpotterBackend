@@ -21,4 +21,9 @@ public class AuthController {
 
     }
 
+    @PostMapping(path = "/logout")
+    public ResponseEntity<String> logout() {
+        // Optionally, you can add some custom logic for logout, like logging out the user manually.
+        return ResponseEntity.ok().body("{\"resp\":\"Logout exitoso\"}");
+    }
 }

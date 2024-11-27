@@ -49,20 +49,23 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())// Deshabilitamos la protección contra ataques Cross-site request forgery
-                .cors(withDefaults())
-                .authorizeHttpRequests((requests) -> {
-                    try {
-                        // Definimos que urls estarán desprotegidas y no necesitarán recibir las credenciales para poder ser accedidas
-                        requests .requestMatchers("/api/autonomies").permitAll()  // Allow access to the autonomies endpoint
-                        .requestMatchers("/auth/register").permitAll() 
-                        .anyRequest().authenticated();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }).httpBasic(withDefaults());
+        http.csrf(csrf -> csrf.disable())  // Disable Cross-Site Request Forgery protection
+            .cors(withDefaults())  // Enable Cross-Origin Resource Sharing (CORS)
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/api/autonomies").permitAll()  // Allow access to the autonomies endpoint without authentication
+                .requestMatchers("/auth/register").permitAll()  // Allow access to the register endpoint without authentication
+                .anyRequest().authenticated()  // All other requests require authentication
+            )
+            .httpBasic(withDefaults())  // Enable HTTP Basic Authentication
+            .logout(logout -> logout
+                .logoutUrl("/auth/logout")  // URL to trigger logout
+                .logoutSuccessUrl("/auth/login")  // Redirect after logout
+                .invalidateHttpSession(true)  // Invalidate the session
+                .deleteCookies("JSESSIONID")  // Delete session cookie
+            );
         return http.build();
     }
+
 
     // Configuración del CORS (Cross-origin resource sharing)
     @Bean
