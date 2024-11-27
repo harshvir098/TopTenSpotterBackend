@@ -8,3 +8,4 @@ public class GeneratePass {
         System.out.println(pass);
     }
 }
+
