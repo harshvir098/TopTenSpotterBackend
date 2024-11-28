@@ -53,7 +53,8 @@ public class SecurityConfig {
             .cors(withDefaults())  // Enable Cross-Origin Resource Sharing (CORS)
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/autonomies").permitAll()  // Allow access to the autonomies endpoint without authentication
-                .requestMatchers("/auth/register").permitAll()  // Allow access to the register endpoint without authentication
+                .requestMatchers("/auth/register").permitAll()
+                .requestMatchers("/api/autonomy/{autonomyId}/category/{category}").permitAll() // Allow access to the register endpoint without authentication
                 .anyRequest().authenticated()  // All other requests require authentication
             )
             .httpBasic(withDefaults())  // Enable HTTP Basic Authentication

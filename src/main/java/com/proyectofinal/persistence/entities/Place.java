@@ -1,33 +1,34 @@
 package com.proyectofinal.persistence.entities;
 
-import java.util.List;
-
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Place {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
     private String description;
-    private double latitude;
-    private double longitude;
+    private Double latitude;  // Use Double instead of double
+    private Double longitude;  // Use Double instead of double
 
-    private String category;  // Category like Restaurant, Nightclub, etc.
+    private String category;
 
     @ManyToOne
     @JoinColumn(name = "autonomy_id", nullable = false)
-    private Autonomy autonomy;  // Autonomy (e.g., Catalonia)
+    private Autonomy autonomy;
 
     @OneToMany(mappedBy = "place")
-    private List<PlaceRating> ratings;  // List of ratings for this place
+    private List<PlaceRating> ratings;
 
-    // Constructors, Getters, and Setters
+    // Default constructor
     public Place() {}
 
-    public Place(String name, String description, double latitude, double longitude, String category, Autonomy autonomy) {
+    // Parameterized constructor
+    public Place(String name, String description, Double latitude, Double longitude, String category, Autonomy autonomy) {
         this.name = name;
         this.description = description;
         this.latitude = latitude;
@@ -61,19 +62,19 @@ public class Place {
         this.description = description;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
