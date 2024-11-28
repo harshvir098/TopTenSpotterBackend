@@ -55,4 +55,7 @@ public class RegistrationController {
 
         return ResponseEntity.ok("{\"message\":\"User registered successfully\"}");
     }
+    
+    
+    
 }

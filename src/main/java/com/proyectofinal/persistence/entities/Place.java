@@ -1,7 +1,14 @@
 package com.proyectofinal.persistence.entities;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Place {
@@ -12,9 +19,8 @@ public class Place {
 
     private String name;
     private String description;
-    private Double latitude;  // Use Double instead of double
-    private Double longitude;  // Use Double instead of double
-
+    private Double latitude;
+    private Double longitude;
     private String category;
 
     @ManyToOne
@@ -100,5 +106,20 @@ public class Place {
 
     public void setRatings(List<PlaceRating> ratings) {
         this.ratings = ratings;
+    }
+
+    public double getAverageRating() {
+        if (ratings.isEmpty()) {
+            return 0;
+        }
+        double total = 0;
+        for (PlaceRating rating : ratings) {
+            total += rating.getRating();
+        }
+        return total / ratings.size();
+    }
+
+    public int getRanking() {
+        return (int) Math.round(getAverageRating());
     }
 }

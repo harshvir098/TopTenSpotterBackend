@@ -45,5 +45,26 @@ public class UserController {
     }
 
     
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable int id, @RequestBody User updatedUser) {
+        Optional<User> existingUserOptional = userRepository.findById(id);
+
+        if (existingUserOptional.isPresent()) {
+            User existingUser = existingUserOptional.get();
+
+            // Update the fields you want
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setAge(updatedUser.getAge());
+            existingUser.setLocation(updatedUser.getLocation());
+
+            // Save updated user to the database
+            userRepository.save(existingUser);
+            return ResponseEntity.ok("{\"message\":\"User updated successfully\"}");
+        } else {
+            return ResponseEntity.status(404).body("{\"error\":\"User not found\"}");
+        }
+    }
+    
     }
 

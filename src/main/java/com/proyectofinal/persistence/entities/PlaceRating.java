@@ -1,7 +1,6 @@
 package com.proyectofinal.persistence.entities;
 
 import jakarta.persistence.*;
-
 @Entity
 public class PlaceRating {
     @Id

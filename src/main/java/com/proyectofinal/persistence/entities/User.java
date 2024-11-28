@@ -6,15 +6,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-
 @Entity
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, unique = true) // Ensuring the username is unique in the database
+    @Column(nullable = false, unique = true)
     private String username;
 
     private String password;
@@ -23,7 +23,7 @@ public class User implements UserDetails {
     private int age;
     private String location;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlaceRating> placeRatings;  // Ratings given by the user
 
     private boolean accountNonExpired;
@@ -31,9 +31,10 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
     private boolean enabled;
 
-    // Constructors, Getters and Setters
+    // Default constructor
     public User() {}
 
+    // Parameterized constructor
     public User(String username, String password, String firstName, String lastName, int age, String location, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
         this.username = username;
         this.password = password;
@@ -147,5 +148,13 @@ public class User implements UserDetails {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    // Pre-remove to handle deletion of ratings when user is deleted
+    @PreRemove
+    public void removeRatings() {
+        for (PlaceRating placeRating : placeRatings) {
+            placeRating.setUser(null);  // Unlink ratings from user
+        }
     }
 }
