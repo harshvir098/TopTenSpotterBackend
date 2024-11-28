@@ -54,6 +54,7 @@ public class SecurityConfig {
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/autonomies").permitAll()  // Allow access to the autonomies endpoint without authentication
                 .requestMatchers("/auth/register").permitAll()
+                .requestMatchers("/api/ratings/**").authenticated()
                 .requestMatchers("/api/autonomy/{autonomyId}/category/{category}").permitAll() // Allow access to the register endpoint without authentication
                 .anyRequest().authenticated()  // All other requests require authentication
             )

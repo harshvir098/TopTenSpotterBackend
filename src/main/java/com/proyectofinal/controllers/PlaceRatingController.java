@@ -1,15 +1,15 @@
 package com.proyectofinal.controllers;
 
-
 import com.proyectofinal.persistence.entities.PlaceRating;
+import com.proyectofinal.persistence.entities.User;
+import com.proyectofinal.persistence.repositories.UserRepository;
 import com.proyectofinal.service.PlaceRatingService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-
 
 @RestController
 @RequestMapping("/api/ratings")
@@ -19,32 +19,50 @@ public class PlaceRatingController {
     @Autowired
     private PlaceRatingService placeRatingService;
 
-    // Endpoint to add or update a rating for a specific place by a user
-    @PostMapping("/rate")
-    public ResponseEntity<PlaceRating> ratePlace(@RequestParam int placeId, @RequestParam int userId, @RequestParam int rating) {
+    @Autowired
+    private UserRepository userRepository;  // Use @Autowired to inject the UserRepository
+
+    @PostMapping("/rate/{placeId}/{rating}")
+    public ResponseEntity<PlaceRating> addRating(@PathVariable int placeId, @PathVariable int rating) {
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Username is the authenticated user's name (assumed to be user identifier)
+
         try {
-            PlaceRating placeRating = placeRatingService.addOrUpdateRating(placeId, userId, rating);
+            // Get the user from the repository
+            User user = userRepository.findByUsername(username);  // Directly fetch the user
+            if (user == null) {
+                return ResponseEntity.badRequest().body(null); // User not found
+            }
+
+            // Use the user object here
+            PlaceRating placeRating = placeRatingService.addRating(placeId, user.getId(), rating);
             return ResponseEntity.ok(placeRating);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null); // Handle errors like place or user not found
         }
     }
 
-    // Endpoint to delete a rating by a user for a specific place
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteRating(@RequestParam int placeId, @RequestParam int userId) {
+    @PutMapping("/rateUpdate/{placeId}/{rating}")
+    public ResponseEntity<PlaceRating> updateRating(@PathVariable int placeId, @PathVariable int rating) {
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName(); // Username is the authenticated user's name (assumed to be user identifier)
+
         try {
-            placeRatingService.deleteRating(placeId, userId);
-            return ResponseEntity.noContent().build();
+            // Get the user from the repository
+            User user = userRepository.findByUsername(username);  // Directly fetch the user
+            if (user == null) {
+                return ResponseEntity.badRequest().body(null); // User not found
+            }
+
+            // Use the user object here
+            PlaceRating placeRating = placeRatingService.updateRating(placeId, user.getId(), rating);
+            return ResponseEntity.ok(placeRating);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(null); // Handle errors like place or user not found
         }
     }
 
-    // Endpoint to get all ratings for a specific place
-    @GetMapping("/place/{placeId}")
-    public ResponseEntity<List<PlaceRating>> getRatingsForPlace(@PathVariable int placeId) {
-        List<PlaceRating> ratings = placeRatingService.getRatingsForPlace(placeId);
-        return ResponseEntity.ok(ratings);
-    }
+
 }

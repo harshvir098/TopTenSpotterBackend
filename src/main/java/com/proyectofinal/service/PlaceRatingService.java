@@ -1,6 +1,5 @@
 package com.proyectofinal.service;
 
-
 import com.proyectofinal.persistence.entities.Place;
 import com.proyectofinal.persistence.entities.PlaceRating;
 import com.proyectofinal.persistence.entities.User;
@@ -11,46 +10,70 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlaceRatingService {
 
-    @Autowired
-    private PlaceRatingRepository placeRatingRepository;
+    private final PlaceRepository placeRepository;
+    private final UserRepository userRepository;
+    private final PlaceRatingRepository placeRatingRepository;
 
     @Autowired
-    private PlaceRepository placeRepository;
+    public PlaceRatingService(PlaceRepository placeRepository, UserRepository userRepository, PlaceRatingRepository placeRatingRepository) {
+        this.placeRepository = placeRepository;
+        this.userRepository = userRepository;
+        this.placeRatingRepository = placeRatingRepository;
+    }
 
-    @Autowired
-    private UserRepository userRepository;
+    // Method to add a new rating
+    public PlaceRating addRating(int placeId, int userId, int rating) {
+        // Find the place and user
+        Optional<Place> place = placeRepository.findById(placeId);
+        Optional<User> user = userRepository.findById(userId);
 
-    // Add or update a rating for a place by a user
-    public PlaceRating addOrUpdateRating(int placeId, int userId, int rating) {
-        Place place = placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Check if the user has already rated this place
-        List<PlaceRating> existingRatings = placeRatingRepository.findByPlaceId(placeId);
-        for (PlaceRating existingRating : existingRatings) {
-            if (existingRating.getUser().getId() == userId) {
-                existingRating.setRating(rating);  // Update the rating if the user has already rated the place
-                return placeRatingRepository.save(existingRating);
-            }
+        if (place.isEmpty() || user.isEmpty()) {
+            throw new RuntimeException("Place or User not found");
         }
 
-        // If no existing rating, create a new one
-        PlaceRating newRating = new PlaceRating(place, user, rating);
-        return placeRatingRepository.save(newRating);
+        // Check if the user has already rated the place
+        Optional<PlaceRating> existingRating = placeRatingRepository.findByPlaceAndUser(place.get(), user.get());
+        if (existingRating.isPresent()) {
+            throw new RuntimeException("User has already rated this place");
+        }
+
+        // Create a new rating
+        PlaceRating placeRating = new PlaceRating();
+        placeRating.setPlace(place.get());
+        placeRating.setUser(user.get());
+        placeRating.setRating(rating);
+        return placeRatingRepository.save(placeRating);
     }
 
-    // Delete a user's rating for a specific place
-    public void deleteRating(int placeId, int userId) {
-        placeRatingRepository.deleteByPlaceIdAndUserId(placeId, userId);
-    }
+    // Method to update an existing rating
+    public PlaceRating updateRating(int placeId, int userId, int rating) {
+        // Find the place and user
+        Optional<Place> place = placeRepository.findById(placeId);
+        Optional<User> user = userRepository.findById(userId);
 
-    // Get all ratings for a specific place
-    public List<PlaceRating> getRatingsForPlace(int placeId) {
-        return placeRatingRepository.findByPlaceId(placeId);
+        if (place.isEmpty() || user.isEmpty()) {
+            throw new RuntimeException("Place or User not found");
+        }
+
+        // Find the existing rating
+        Optional<PlaceRating> existingRating = placeRatingRepository.findByPlaceAndUser(place.get(), user.get());
+        if (existingRating.isEmpty()) {
+            throw new RuntimeException("User has not rated this place");
+        }
+
+        // Check if the user is the one who originally rated the place
+        PlaceRating placeRating = existingRating.get();
+        if (placeRating.getUser().getId() != userId) {
+            throw new RuntimeException("User is not authorized to update this rating");
+        }
+
+        // Update the rating
+        placeRating.setRating(rating);
+        return placeRatingRepository.save(placeRating);
     }
 }
-
