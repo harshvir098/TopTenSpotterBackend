@@ -1,10 +1,13 @@
 package com.proyectofinal.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,4 +33,17 @@ public class AutonomyController {
         // Fetching all autonomies from the repository
         return autonomyRepository.findAll();
     }
+    
+    // Obtener una autonomía por nombre
+    @GetMapping("/{name}")
+    public ResponseEntity<Autonomy> getAutonomyByName(@PathVariable String name) {
+        Optional<Autonomy> autonomy = autonomyRepository.findByName(name);
+
+        if (autonomy.isPresent()) {
+            return ResponseEntity.ok(autonomy.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
+}
 }

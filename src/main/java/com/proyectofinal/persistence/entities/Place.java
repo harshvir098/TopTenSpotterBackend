@@ -22,6 +22,16 @@ public class Place {
     private Double latitude;
     private Double longitude;
     private String category;
+    private String imagePath; // New field
+
+    // Getters and Setters
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     @ManyToOne
     @JoinColumn(name = "autonomy_id", nullable = false)
