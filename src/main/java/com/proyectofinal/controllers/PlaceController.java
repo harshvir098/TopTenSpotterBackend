@@ -57,7 +57,9 @@ public class PlaceController {
                         place.getCategory(),
                         calculateAverageRating(place),
                         place.getDescription(),  // Include description
-                        getRatingsWithUserDetails(place)))  // Include ratings with user names
+                        getRatingsWithUserDetails(place),
+                        place.getImagePath()
+                        ))  // Include ratings with user names
                 .collect(Collectors.toList());
     }
 
@@ -87,9 +89,9 @@ public class PlaceController {
     }
 
     
-    private static final String IMAGE_DIR = "src/main/resources/static/images/";
 
-    
+
+  
 
     @GetMapping("/places/{placeId}")
     public Place getPlace(@PathVariable int placeId) {

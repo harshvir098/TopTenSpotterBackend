@@ -9,14 +9,25 @@ public class PlaceWithRatingDTO {
     private double averageRating;
     private String description;  // Description from the Place entity
     private List<RatingDetail> ratings;  // List of ratings with user details
+    private String imagePath; // New field
+
+    // Getters and Setters
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
 
     // Constructor
-    public PlaceWithRatingDTO(String placeName, String category, double averageRating, String description, List<RatingDetail> ratings) {
+    public PlaceWithRatingDTO(String placeName, String category, double averageRating, String description, List<RatingDetail> ratings,String imagePath) {
         this.placeName = placeName;
         this.category = category;
         this.averageRating = averageRating;
         this.description = description;
         this.ratings = ratings;
+        this.imagePath=imagePath;
     }
 
     // Getters and Setters

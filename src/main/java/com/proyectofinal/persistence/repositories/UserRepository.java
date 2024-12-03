@@ -9,5 +9,6 @@ import com.proyectofinal.persistence.entities.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
     User findByUsername(String username);
+    User findUserById(Integer i);
     
 }

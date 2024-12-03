@@ -2,6 +2,9 @@ package com.proyectofinal.persistence.entities;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,7 +39,9 @@ public class Place {
     @ManyToOne
     @JoinColumn(name = "autonomy_id", nullable = false)
     private Autonomy autonomy;
-
+    
+    
+@JsonIgnore
     @OneToMany(mappedBy = "place")
     private List<PlaceRating> ratings;
 
