@@ -52,7 +52,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())  // Disable Cross-Site Request Forgery protection
             .cors(withDefaults())  // Enable Cross-Origin Resource Sharing (CORS)
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/api/autonomies","/api/autonomies/{name}","/api/places/{placeId}").permitAll()  // Allow access to the autonomies endpoint without authentication
+                .requestMatchers("/api/autonomies","/api/autonomies/{name}","/api/places/{placeId}","/api/ratings/user/**").permitAll()  // Allow access to the autonomies endpoint without authentication
                 .requestMatchers("/auth/register").permitAll()
                 .requestMatchers("/api/ratings/**").authenticated()
                 .requestMatchers("/images/**").permitAll()

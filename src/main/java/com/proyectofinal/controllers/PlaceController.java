@@ -1,29 +1,24 @@
 package com.proyectofinal.controllers;
 
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.proyectofinal.dto.PlaceWithRatingDTO;
 import com.proyectofinal.persistence.entities.Place;
 import com.proyectofinal.persistence.entities.PlaceRating;
+import com.proyectofinal.persistence.entities.User;
 import com.proyectofinal.persistence.repositories.PlaceRatingRepository;
 import com.proyectofinal.persistence.repositories.PlaceRepository;
 import com.proyectofinal.persistence.repositories.UserRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -31,7 +26,7 @@ public class PlaceController {
 
     private final PlaceRepository placeRepository;
     private final PlaceRatingRepository placeRatingRepository;
-    private final UserRepository userRepository; // Assuming there's a UserRepository to get user details
+    private final UserRepository userRepository;
 
     @Autowired
     public PlaceController(PlaceRepository placeRepository, PlaceRatingRepository placeRatingRepository, UserRepository userRepository) {
@@ -44,7 +39,7 @@ public class PlaceController {
     @GetMapping("/autonomy/{autonomyId}/category/{category}")
     public List<PlaceWithRatingDTO> getPlacesByAutonomyAndCategory(
             @PathVariable Integer autonomyId, @PathVariable String category) {
-        
+
         // Fetch places by autonomy and category
         List<Place> places = placeRepository.findByAutonomy_IdAndCategory(autonomyId, category);
 
@@ -59,7 +54,7 @@ public class PlaceController {
                         place.getDescription(),  // Include description
                         getRatingsWithUserDetails(place),
                         place.getImagePath()
-                        ))  // Include ratings with user names
+                ))  // Include ratings with user names
                 .collect(Collectors.toList());
     }
 
@@ -88,14 +83,9 @@ public class PlaceController {
                 .collect(Collectors.toList());
     }
 
-    
-
-
-  
-
     @GetMapping("/places/{placeId}")
     public Place getPlace(@PathVariable int placeId) {
         return placeRepository.findById(placeId).orElseThrow(() -> new RuntimeException("Place not found"));
     }
-    
+
 }

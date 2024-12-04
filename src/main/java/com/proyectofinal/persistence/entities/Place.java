@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,7 +43,7 @@ public class Place {
     
     
 @JsonIgnore
-    @OneToMany(mappedBy = "place")
+@OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlaceRating> ratings;
 
     // Default constructor
@@ -137,4 +138,7 @@ public class Place {
     public int getRanking() {
         return (int) Math.round(getAverageRating());
     }
+    
+    
+    
 }
