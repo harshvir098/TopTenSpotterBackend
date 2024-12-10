@@ -1,5 +1,7 @@
 package com.proyectofinal.controllers;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +35,7 @@ public class AutonomyController {
     // Obtener una autonomía por nombre
     @GetMapping("/{name}")
     public ResponseEntity<Autonomy> getAutonomyByName(@PathVariable String name) {
+        // Buscar la autonomía decodificada
         Optional<Autonomy> autonomy = autonomyRepository.findByName(name);
 
         if (autonomy.isPresent()) {
@@ -41,4 +44,5 @@ public class AutonomyController {
             return ResponseEntity.notFound().build();
         }
     }
+
 }

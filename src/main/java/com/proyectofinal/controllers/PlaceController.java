@@ -1,16 +1,29 @@
 package com.proyectofinal.controllers;
 
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.proyectofinal.dto.PlaceWithRatingDTO;
 import com.proyectofinal.persistence.entities.Place;
 import com.proyectofinal.persistence.entities.PlaceRating;
-import com.proyectofinal.persistence.repositories.PlaceRepository;
 import com.proyectofinal.persistence.repositories.PlaceRatingRepository;
+import com.proyectofinal.persistence.repositories.PlaceRepository;
 import com.proyectofinal.persistence.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -26,7 +39,6 @@ public class PlaceController {
         this.placeRatingRepository = placeRatingRepository;
         this.userRepository = userRepository;
     }
-
 
     // Endpoint to get places by autonomy and category, sorted by average rating
     @GetMapping("/autonomy/{autonomyId}/category/{category}")
@@ -45,9 +57,13 @@ public class PlaceController {
                         place.getCategory(),
                         calculateAverageRating(place),
                         place.getDescription(),  // Include description
+                        place.getLongitude(),
+                        place.getLatitude(),
+                        place.getImagePath(),
                         getRatingsWithUserDetails(place)))  // Include ratings with user names
                 .collect(Collectors.toList());
     }
+
 
     // Helper method to calculate the average rating for a place
     private double calculateAverageRating(Place place) {
@@ -72,5 +88,15 @@ public class PlaceController {
                     return new PlaceWithRatingDTO.RatingDetail(userName, rating.getRating());
                 })
                 .collect(Collectors.toList());
+    }
+
+
+    private static final String IMAGE_DIR = "src/main/resources/static/images/";
+
+
+
+    @GetMapping("/places/{placeName}")
+    public Place getPlace(@PathVariable String placeName) {
+        return placeRepository.findByName(placeName);
     }
 }

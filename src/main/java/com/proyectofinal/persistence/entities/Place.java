@@ -2,13 +2,8 @@ package com.proyectofinal.persistence.entities;
 
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
 public class Place {
@@ -22,25 +17,33 @@ public class Place {
     private Double latitude;
     private Double longitude;
     private String category;
+    private String imagePath; // New field
 
     @ManyToOne
     @JoinColumn(name = "autonomy_id", nullable = false)
     private Autonomy autonomy;
 
-    @OneToMany(mappedBy = "place")
+    @JsonIgnore
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true) // Relación uno a muchos, gestionada por `place` en `Comments`
     private List<PlaceRating> ratings;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, orphanRemoval = true) // Relación uno a muchos, gestionada por `place` en `Comments`
+    private List<Comments> comments; // Aquí también usamos `mappedBy`
 
     // Default constructor
     public Place() {}
 
     // Parameterized constructor
-    public Place(String name, String description, Double latitude, Double longitude, String category, Autonomy autonomy) {
+    public Place(String name, String description, Double latitude, Double longitude, String category, Autonomy autonomy, String imagePath, List<Comments> comments ) {
         this.name = name;
         this.description = description;
         this.latitude = latitude;
         this.longitude = longitude;
         this.category = category;
         this.autonomy = autonomy;
+        this.imagePath = imagePath;
+        this.comments = comments;
     }
 
     // Getters and Setters
@@ -108,6 +111,14 @@ public class Place {
         this.ratings = ratings;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     public double getAverageRating() {
         if (ratings.isEmpty()) {
             return 0;
@@ -121,5 +132,13 @@ public class Place {
 
     public int getRanking() {
         return (int) Math.round(getAverageRating());
+    }
+
+    public List<Comments> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comments> comments) {
+        this.comments = comments;
     }
 }
