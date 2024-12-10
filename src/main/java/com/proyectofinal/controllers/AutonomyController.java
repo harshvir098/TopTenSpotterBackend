@@ -8,11 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.proyectofinal.persistence.entities.Autonomy;
 import com.proyectofinal.persistence.repositories.AutonomyRepository;
+import com.proyectofinal.service.AutonomyService;
 
 @RestController
 @RequestMapping("/api/autonomies")
@@ -20,6 +24,11 @@ import com.proyectofinal.persistence.repositories.AutonomyRepository;
 public class AutonomyController {
 
     private final AutonomyRepository autonomyRepository;
+    private AutonomyService autonomyService;
+    
+    
+    
+   
 
     // Constructor injection to inject AutonomyRepository
     @Autowired
@@ -46,4 +55,8 @@ public class AutonomyController {
         }
 
 }
+    
+    
+    
+    
 }

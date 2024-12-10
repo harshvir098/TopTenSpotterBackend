@@ -3,12 +3,17 @@ package com.proyectofinal.persistence.entities;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "autonomy", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"latitude", "longitude", "name"})
+})
 public class Autonomy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    
+    @Column(nullable = false, unique = true)
     private String name;  // e.g., Catalonia
+    
     private double latitude;
     private double longitude;
 
