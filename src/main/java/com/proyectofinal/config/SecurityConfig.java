@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -55,7 +56,8 @@ public class SecurityConfig {
                 .requestMatchers("/auth/register").permitAll()
                 .requestMatchers("/api/ratings/**").authenticated()
                 .requestMatchers("/images/**").permitAll()
-                .requestMatchers("/api/autonomy/{autonomyId}/category/{category}").permitAll() // Allow access to the register endpoint without authentication
+                .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
+                .requestMatchers( "/api/comments/place/{placeId}","/api/autonomy/{autonomyId}/category/{category}").permitAll() // Allow access to the register endpoint without authentication
                 .requestMatchers("/api/autonomies","/api/autonomies/{name}","/api/autonomies/upload","/api/places/{placeId}","/api/ratings/user/**").permitAll()  // Allow access to the autonomies endpoint without authentication
                 .anyRequest().authenticated()  // All other requests require authentication
             )

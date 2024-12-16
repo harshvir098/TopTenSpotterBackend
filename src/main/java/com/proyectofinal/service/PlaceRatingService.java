@@ -54,7 +54,7 @@ public class PlaceRatingService {
         // Guardar la calificación (nueva o actualizada)
         return placeRatingRepository.save(placeRating);
     }
-    
+
     public Integer getUserRating(int placeId, int userId) {
         Optional<Place> place = placeRepository.findById(placeId);
         Optional<User> user = userRepository.findById(userId);
@@ -71,16 +71,15 @@ public class PlaceRatingService {
         }
 
         return null; // Return null if no rating found
-    } 
-    
+    }
+
     public PlaceRating getRatingForPlace(int placeId, int userId) {
         // Fetch the rating for the specific place and user
         return placeRatingRepository.findByPlaceIdAndUserId(placeId, userId).orElse(null); // Returns null if no rating exists
     }
 
 
-	
 
-    
+
+
 }
-

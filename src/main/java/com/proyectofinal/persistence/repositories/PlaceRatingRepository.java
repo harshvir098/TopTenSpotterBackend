@@ -30,4 +30,6 @@ public interface PlaceRatingRepository extends JpaRepository<PlaceRating, Intege
 
 
     Optional<PlaceRating> findByPlaceIdAndUserId(int placeId, int userId);
+
+	List<PlaceRating> findByPlaceIn(List<Place> places);
 }

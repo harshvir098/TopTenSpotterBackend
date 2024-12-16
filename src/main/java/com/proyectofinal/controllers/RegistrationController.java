@@ -44,7 +44,7 @@ public class RegistrationController {
         newUser.setLastName(request.getLastName());
         newUser.setAge(request.getAge());
         newUser.setLocation(request.getLocation());
-      
+
         newUser.setAccountNonExpired(true);
         newUser.setAccountNonLocked(true);
         newUser.setCredentialsNonExpired(true);
@@ -55,7 +55,7 @@ public class RegistrationController {
 
         return ResponseEntity.ok("{\"message\":\"User registered successfully\"}");
     }
-    
-    
-    
+
+
+
 }

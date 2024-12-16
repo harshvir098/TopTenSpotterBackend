@@ -25,7 +25,7 @@ public class PlaceRatingController {
     private UserRepository userRepository;
     @Autowired
     private PlaceRepository placeRepository;
-    
+
 
     // Create or update the rating for a place
     @PostMapping("/rate/{placeId}/{rating}")
@@ -57,8 +57,8 @@ public class PlaceRatingController {
     }
 
 
-    
-    
+
+
     @GetMapping("/user/{placeId}")
     public ResponseEntity<PlaceRating> getRatingForPlace(@PathVariable int placeId) {
         // Get the authenticated user
