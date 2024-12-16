@@ -55,7 +55,9 @@ public class UserController {
         try {
             // Define the folder to store uploaded photos (relative to the resources directory)
             // Use a dynamic path
-            String uploadDir = Paths.get("src/main/resources/static/profileimg/").toAbsolutePath().toString();
+            String uploadDir = Paths.get("src/main/resources/static/").toAbsolutePath().toString();
+            
+            System.out.println("Saving photo to: " + uploadDir);
             File uploadDirectory = new File(uploadDir);
             if (!uploadDirectory.exists()) {
                 uploadDirectory.mkdirs();  // Create directory if it doesn't exist
