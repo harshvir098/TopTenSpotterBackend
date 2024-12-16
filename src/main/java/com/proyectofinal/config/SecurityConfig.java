@@ -55,7 +55,7 @@ public class SecurityConfig {
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/auth/register").permitAll()
                 .requestMatchers("/api/ratings/**").authenticated()
-                .requestMatchers("/images/**").permitAll()
+                .requestMatchers("/images/**", "/uploads/profileimg/*").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
                 .requestMatchers( "/api/comments/place/{placeId}","/api/autonomy/{autonomyId}/category/{category}").permitAll() // Allow access to the register endpoint without authentication
                 .requestMatchers("/api/autonomies","/api/autonomies/{name}","/api/autonomies/upload","/api/places/{placeId}","/api/ratings/user/**").permitAll()  // Allow access to the autonomies endpoint without authentication
