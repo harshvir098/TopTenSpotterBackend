@@ -78,7 +78,8 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins(localDomainFront);
+                registry.addMapping("/**").allowedOrigins(localDomainFront, "https://top-ten-spotter-front-git-master-hectors-projects-0f7cd3a6.vercel.app/");
+                
                 registry.addMapping("/**").allowedMethods("POST", "PUT", "GET", "DELETE", "OPTIONS");
             }
         };
