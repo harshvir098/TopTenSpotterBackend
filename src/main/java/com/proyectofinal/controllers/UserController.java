@@ -53,26 +53,43 @@ public class UserController {
     // Method to save photo and return the filename
     private String savePhoto(MultipartFile photo) {
         try {
-            // Define the folder to store uploaded photos (relative to the resources directory)
-            // Use a dynamic path
-            String uploadDir = Paths.get("/uploads/profileimg").toAbsolutePath().toString();
+            // Use the /tmp directory for Render, as it is writable in cloud environments
+            String uploadDir = "/tmp/uploads/profileimg";  // /tmp is writable on Render
+            
+            // Log the upload path to debug
+            System.out.println("Attempting to save photo to: " + uploadDir);
             
             File uploadDirectory = new File(uploadDir);
             if (!uploadDirectory.exists()) {
-                uploadDirectory.mkdirs();  // Create directory if it doesn't exist
+                boolean created = uploadDirectory.mkdirs();  // Create the directory if it doesn't exist
+                if (!created) {
+                    System.out.println("Failed to create directory: " + uploadDir);
+                    throw new RuntimeException("Failed to create directory: " + uploadDir);
+                }
             }
 
             // Get the original filename and create a unique filename
             String filename = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
+            
+            // Ensure the file path is correct with a separator
+            File fileToSave = new File(uploadDir + "/" + filename);
+            
             // Save the photo to the specified directory
-            File fileToSave = new File(uploadDir + filename);
             photo.transferTo(fileToSave);
+
+            // Log the saved file path for debugging
+            System.out.println("Photo saved to: " + fileToSave.getAbsolutePath());
+
             // Return the filename to store in the database
             return filename;
         } catch (IOException e) {
+            // Log the error and rethrow it
+            System.err.println("Error saving photo: " + e.getMessage());
             throw new RuntimeException("Failed to save photo", e);
         }
     }
+
+    
     
     
 }
