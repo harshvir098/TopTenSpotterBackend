@@ -15,12 +15,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
 
     @Value("${app.local-domain-front}")
     private String localDomainFront;
@@ -33,6 +34,13 @@ public class SecurityConfig {
 
     public AuthenticationSuccessHandler succesHandler() {
         return (request, response, authentication) -> response.sendRedirect("/");
+    }
+    
+    
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/profileimg/**")
+                .addResourceLocations("file:/tmp/uploads/profileimg/");
     }
 
     @Autowired
@@ -55,7 +63,8 @@ public class SecurityConfig {
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/auth/register").permitAll()
                 .requestMatchers("/api/ratings/**").authenticated()
-                .requestMatchers("/images/**", "/uploads/profileimg/*").permitAll()
+                .requestMatchers("/images/**", "/uploads/profileimg/**").permitAll()
+
                 .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()
                 .requestMatchers( "/api/comments/place/{placeId}","/api/autonomy/{autonomyId}/category/{category}").permitAll() // Allow access to the register endpoint without authentication
                 .requestMatchers("/api/autonomies","/api/autonomies/{name}","/api/autonomies/upload","/api/places/{placeId}","/api/ratings/user/**").permitAll()  // Allow access to the autonomies endpoint without authentication
@@ -70,6 +79,7 @@ public class SecurityConfig {
             );
         return http.build();
     }
+  
 
 
     // Configuración del CORS (Cross-origin resource sharing)
